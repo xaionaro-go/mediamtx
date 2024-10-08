@@ -23,6 +23,7 @@ import (
 	"github.com/xaionaro-go/mediamtx/pkg/externalcmd"
 	"github.com/xaionaro-go/mediamtx/pkg/logger"
 	"github.com/xaionaro-go/mediamtx/pkg/metrics"
+	"github.com/xaionaro-go/mediamtx/pkg/pathmanager"
 	"github.com/xaionaro-go/mediamtx/pkg/playback"
 	"github.com/xaionaro-go/mediamtx/pkg/pprof"
 	"github.com/xaionaro-go/mediamtx/pkg/recordcleaner"
@@ -74,7 +75,7 @@ type Core struct {
 	pprof           *pprof.PPROF
 	recordCleaner   *recordcleaner.Cleaner
 	playbackServer  *playback.Server
-	pathManager     *pathManager
+	pathManager     *pathmanager.PathManager
 	rtspServer      *rtsp.Server
 	rtspsServer     *rtsp.Server
 	rtmpServer      *rtmp.Server
@@ -350,19 +351,19 @@ func (p *Core) createResources(initial bool) error {
 	}
 
 	if p.pathManager == nil {
-		p.pathManager = &pathManager{
-			logLevel:          p.conf.LogLevel,
-			authManager:       p.authManager,
-			rtspAddress:       p.conf.RTSPAddress,
-			readTimeout:       p.conf.ReadTimeout,
-			writeTimeout:      p.conf.WriteTimeout,
-			writeQueueSize:    p.conf.WriteQueueSize,
-			udpMaxPayloadSize: p.conf.UDPMaxPayloadSize,
-			pathConfs:         p.conf.Paths,
-			externalCmdPool:   p.externalCmdPool,
-			parent:            p,
-		}
-		p.pathManager.initialize()
+		p.pathManager = pathmanager.New(
+			p.conf.LogLevel,
+			p.authManager,
+			p.conf.RTSPAddress,
+			p.conf.ReadTimeout,
+			p.conf.WriteTimeout,
+			p.conf.WriteQueueSize,
+			p.conf.UDPMaxPayloadSize,
+			p.conf.Paths,
+			p.externalCmdPool,
+			p,
+		)
+		p.pathManager.Initialize(context.Background())
 
 		if p.metrics != nil {
 			p.metrics.SetPathManager(p.pathManager)
@@ -539,7 +540,7 @@ func (p *Core) createResources(initial bool) error {
 		}
 		p.hlsServer = i
 
-		p.pathManager.setHLSServer(p.hlsServer)
+		p.pathManager.SetHLSServer(p.hlsServer)
 
 		if p.metrics != nil {
 			p.metrics.SetHLSServer(p.hlsServer)
@@ -907,7 +908,7 @@ func (p *Core) closeResources(newConf *conf.Conf, calledByAPI bool) {
 			p.metrics.SetHLSServer(nil)
 		}
 
-		p.pathManager.setHLSServer(nil)
+		p.pathManager.SetHLSServer(nil)
 
 		p.hlsServer.Close()
 		p.hlsServer = nil
@@ -954,7 +955,7 @@ func (p *Core) closeResources(newConf *conf.Conf, calledByAPI bool) {
 			p.metrics.SetPathManager(nil)
 		}
 
-		p.pathManager.close()
+		p.pathManager.Close()
 		p.pathManager = nil
 	}
 

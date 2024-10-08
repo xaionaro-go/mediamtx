@@ -1,4 +1,4 @@
-package core
+package pathmanager
 
 import (
 	"context"
@@ -44,11 +44,11 @@ type pathManagerHLSServer interface {
 	PathNotReady(defs.Path)
 }
 
-type pathManagerParent interface {
+type PathManagerParent interface {
 	logger.Writer
 }
 
-type pathManager struct {
+type PathManager struct {
 	logLevel          conf.LogLevel
 	authManager       *auth.Manager
 	rtspAddress       string
@@ -58,7 +58,7 @@ type pathManager struct {
 	udpMaxPayloadSize int
 	pathConfs         map[string]*conf.Path
 	externalCmdPool   *externalcmd.Pool
-	parent            pathManagerParent
+	parent            PathManagerParent
 
 	ctx         context.Context
 	ctxCancel   func()
@@ -81,8 +81,34 @@ type pathManager struct {
 	chAPIPathsGet  chan pathAPIPathsGetReq
 }
 
-func (pm *pathManager) initialize() {
-	ctx, ctxCancel := context.WithCancel(context.Background())
+func New(
+	logLevel conf.LogLevel,
+	authManager *auth.Manager,
+	rtspAddress string,
+	readTimeout conf.Duration,
+	writeTimeout conf.Duration,
+	writeQueueSize int,
+	udpMaxPayloadSize int,
+	pathConfs map[string]*conf.Path,
+	externalCmdPool *externalcmd.Pool,
+	parent PathManagerParent,
+) *PathManager {
+	return &PathManager{
+		logLevel:          logLevel,
+		authManager:       authManager,
+		rtspAddress:       rtspAddress,
+		readTimeout:       readTimeout,
+		writeTimeout:      writeTimeout,
+		writeQueueSize:    writeQueueSize,
+		udpMaxPayloadSize: udpMaxPayloadSize,
+		pathConfs:         pathConfs,
+		externalCmdPool:   externalCmdPool,
+		parent:            parent,
+	}
+}
+
+func (pm *PathManager) Initialize(ctx context.Context) {
+	ctx, ctxCancel := context.WithCancel(ctx)
 
 	pm.ctx = ctx
 	pm.ctxCancel = ctxCancel
@@ -112,18 +138,18 @@ func (pm *pathManager) initialize() {
 	go pm.run()
 }
 
-func (pm *pathManager) close() {
+func (pm *PathManager) Close() {
 	pm.Log(logger.Debug, "path manager is shutting down")
 	pm.ctxCancel()
 	pm.wg.Wait()
 }
 
 // Log implements logger.Writer.
-func (pm *pathManager) Log(level logger.Level, format string, args ...interface{}) {
+func (pm *PathManager) Log(level logger.Level, format string, args ...interface{}) {
 	pm.parent.Log(level, format, args...)
 }
 
-func (pm *pathManager) run() {
+func (pm *PathManager) run() {
 	defer pm.wg.Done()
 
 outer:
@@ -170,7 +196,7 @@ outer:
 	pm.ctxCancel()
 }
 
-func (pm *pathManager) doReloadConf(newPaths map[string]*conf.Path) {
+func (pm *PathManager) doReloadConf(newPaths map[string]*conf.Path) {
 	for confName, pathConf := range pm.pathConfs {
 		if newPath, ok := newPaths[confName]; ok {
 			// configuration has changed
@@ -207,30 +233,30 @@ func (pm *pathManager) doReloadConf(newPaths map[string]*conf.Path) {
 	}
 }
 
-func (pm *pathManager) doSetHLSServer(m pathManagerHLSServer) {
+func (pm *PathManager) doSetHLSServer(m pathManagerHLSServer) {
 	pm.hlsManager = m
 }
 
-func (pm *pathManager) doClosePath(pa *path) {
+func (pm *PathManager) doClosePath(pa *path) {
 	if pmpa, ok := pm.paths[pa.name]; !ok || pmpa != pa {
 		return
 	}
 	pm.removePath(pa)
 }
 
-func (pm *pathManager) doPathReady(pa *path) {
+func (pm *PathManager) doPathReady(pa *path) {
 	if pm.hlsManager != nil {
 		pm.hlsManager.PathReady(pa)
 	}
 }
 
-func (pm *pathManager) doPathNotReady(pa *path) {
+func (pm *PathManager) doPathNotReady(pa *path) {
 	if pm.hlsManager != nil {
 		pm.hlsManager.PathNotReady(pa)
 	}
 }
 
-func (pm *pathManager) doFindPathConf(req defs.PathFindPathConfReq) {
+func (pm *PathManager) doFindPathConf(req defs.PathFindPathConfReq) {
 	pathConf, _, err := conf.FindPathConf(pm.pathConfs, req.AccessRequest.Name)
 	if err != nil {
 		req.Res <- defs.PathFindPathConfRes{Err: err}
@@ -246,7 +272,7 @@ func (pm *pathManager) doFindPathConf(req defs.PathFindPathConfReq) {
 	req.Res <- defs.PathFindPathConfRes{Conf: pathConf}
 }
 
-func (pm *pathManager) doDescribe(req defs.PathDescribeReq) {
+func (pm *PathManager) doDescribe(req defs.PathDescribeReq) {
 	pathConf, pathMatches, err := conf.FindPathConf(pm.pathConfs, req.AccessRequest.Name)
 	if err != nil {
 		req.Res <- defs.PathDescribeRes{Err: err}
@@ -267,7 +293,7 @@ func (pm *pathManager) doDescribe(req defs.PathDescribeReq) {
 	req.Res <- defs.PathDescribeRes{Path: pm.paths[req.AccessRequest.Name]}
 }
 
-func (pm *pathManager) doAddReader(req defs.PathAddReaderReq) {
+func (pm *PathManager) doAddReader(req defs.PathAddReaderReq) {
 	pathConf, pathMatches, err := conf.FindPathConf(pm.pathConfs, req.AccessRequest.Name)
 	if err != nil {
 		req.Res <- defs.PathAddReaderRes{Err: err}
@@ -290,7 +316,7 @@ func (pm *pathManager) doAddReader(req defs.PathAddReaderReq) {
 	req.Res <- defs.PathAddReaderRes{Path: pm.paths[req.AccessRequest.Name]}
 }
 
-func (pm *pathManager) doAddPublisher(req defs.PathAddPublisherReq) {
+func (pm *PathManager) doAddPublisher(req defs.PathAddPublisherReq) {
 	pathConf, pathMatches, err := conf.FindPathConf(pm.pathConfs, req.AccessRequest.Name)
 	if err != nil {
 		req.Res <- defs.PathAddPublisherRes{Err: err}
@@ -313,7 +339,7 @@ func (pm *pathManager) doAddPublisher(req defs.PathAddPublisherReq) {
 	req.Res <- defs.PathAddPublisherRes{Path: pm.paths[req.AccessRequest.Name]}
 }
 
-func (pm *pathManager) doAPIPathsList(req pathAPIPathsListReq) {
+func (pm *PathManager) doAPIPathsList(req pathAPIPathsListReq) {
 	paths := make(map[string]*path)
 
 	for name, pa := range pm.paths {
@@ -323,7 +349,7 @@ func (pm *pathManager) doAPIPathsList(req pathAPIPathsListReq) {
 	req.res <- pathAPIPathsListRes{paths: paths}
 }
 
-func (pm *pathManager) doAPIPathsGet(req pathAPIPathsGetReq) {
+func (pm *PathManager) doAPIPathsGet(req pathAPIPathsGetReq) {
 	path, ok := pm.paths[req.name]
 	if !ok {
 		req.res <- pathAPIPathsGetRes{err: conf.ErrPathNotFound}
@@ -333,7 +359,7 @@ func (pm *pathManager) doAPIPathsGet(req pathAPIPathsGetReq) {
 	req.res <- pathAPIPathsGetRes{path: path}
 }
 
-func (pm *pathManager) createPath(
+func (pm *PathManager) createPath(
 	pathConf *conf.Path,
 	name string,
 	matches []string,
@@ -363,7 +389,7 @@ func (pm *pathManager) createPath(
 	pm.pathsByConf[pathConf.Name][pa] = struct{}{}
 }
 
-func (pm *pathManager) removePath(pa *path) {
+func (pm *PathManager) removePath(pa *path) {
 	delete(pm.pathsByConf[pa.conf.Name], pa)
 	if len(pm.pathsByConf[pa.conf.Name]) == 0 {
 		delete(pm.pathsByConf, pa.conf.Name)
@@ -372,7 +398,7 @@ func (pm *pathManager) removePath(pa *path) {
 }
 
 // ReloadPathConfs is called by core.
-func (pm *pathManager) ReloadPathConfs(pathConfs map[string]*conf.Path) {
+func (pm *PathManager) ReloadPathConfs(pathConfs map[string]*conf.Path) {
 	select {
 	case pm.chReloadConf <- pathConfs:
 	case <-pm.ctx.Done():
@@ -380,7 +406,7 @@ func (pm *pathManager) ReloadPathConfs(pathConfs map[string]*conf.Path) {
 }
 
 // pathReady is called by path.
-func (pm *pathManager) pathReady(pa *path) {
+func (pm *PathManager) pathReady(pa *path) {
 	select {
 	case pm.chPathReady <- pa:
 	case <-pm.ctx.Done():
@@ -389,7 +415,7 @@ func (pm *pathManager) pathReady(pa *path) {
 }
 
 // pathNotReady is called by path.
-func (pm *pathManager) pathNotReady(pa *path) {
+func (pm *PathManager) pathNotReady(pa *path) {
 	select {
 	case pm.chPathNotReady <- pa:
 	case <-pm.ctx.Done():
@@ -398,7 +424,7 @@ func (pm *pathManager) pathNotReady(pa *path) {
 }
 
 // closePath is called by path.
-func (pm *pathManager) closePath(pa *path) {
+func (pm *PathManager) closePath(pa *path) {
 	select {
 	case pm.chClosePath <- pa:
 	case <-pm.ctx.Done():
@@ -407,7 +433,7 @@ func (pm *pathManager) closePath(pa *path) {
 }
 
 // GetConfForPath is called by a reader or publisher.
-func (pm *pathManager) FindPathConf(req defs.PathFindPathConfReq) (*conf.Path, error) {
+func (pm *PathManager) FindPathConf(req defs.PathFindPathConfReq) (*conf.Path, error) {
 	req.Res = make(chan defs.PathFindPathConfRes)
 	select {
 	case pm.chFindPathConf <- req:
@@ -420,7 +446,7 @@ func (pm *pathManager) FindPathConf(req defs.PathFindPathConfReq) (*conf.Path, e
 }
 
 // Describe is called by a reader or publisher.
-func (pm *pathManager) Describe(req defs.PathDescribeReq) defs.PathDescribeRes {
+func (pm *PathManager) Describe(req defs.PathDescribeReq) defs.PathDescribeRes {
 	req.Res = make(chan defs.PathDescribeRes)
 	select {
 	case pm.chDescribe <- req:
@@ -443,7 +469,7 @@ func (pm *pathManager) Describe(req defs.PathDescribeReq) defs.PathDescribeRes {
 }
 
 // AddPublisher is called by a publisher.
-func (pm *pathManager) AddPublisher(req defs.PathAddPublisherReq) (defs.Path, error) {
+func (pm *PathManager) AddPublisher(req defs.PathAddPublisherReq) (defs.Path, error) {
 	req.Res = make(chan defs.PathAddPublisherRes)
 	select {
 	case pm.chAddPublisher <- req:
@@ -460,7 +486,7 @@ func (pm *pathManager) AddPublisher(req defs.PathAddPublisherReq) (defs.Path, er
 }
 
 // AddReader is called by a reader.
-func (pm *pathManager) AddReader(req defs.PathAddReaderReq) (defs.Path, *stream.Stream, error) {
+func (pm *PathManager) AddReader(req defs.PathAddReaderReq) (defs.Path, *stream.Stream, error) {
 	req.Res = make(chan defs.PathAddReaderRes)
 	select {
 	case pm.chAddReader <- req:
@@ -476,8 +502,8 @@ func (pm *pathManager) AddReader(req defs.PathAddReaderReq) (defs.Path, *stream.
 	}
 }
 
-// setHLSServer is called by hlsManager.
-func (pm *pathManager) setHLSServer(s pathManagerHLSServer) {
+// SetHLSServer is called by hlsManager.
+func (pm *PathManager) SetHLSServer(s pathManagerHLSServer) {
 	select {
 	case pm.chSetHLSServer <- s:
 	case <-pm.ctx.Done():
@@ -485,7 +511,7 @@ func (pm *pathManager) setHLSServer(s pathManagerHLSServer) {
 }
 
 // APIPathsList is called by api.
-func (pm *pathManager) APIPathsList() (*defs.APIPathList, error) {
+func (pm *PathManager) APIPathsList() (*defs.APIPathList, error) {
 	req := pathAPIPathsListReq{
 		res: make(chan pathAPIPathsListRes),
 	}
@@ -517,7 +543,7 @@ func (pm *pathManager) APIPathsList() (*defs.APIPathList, error) {
 }
 
 // APIPathsGet is called by api.
-func (pm *pathManager) APIPathsGet(name string) (*defs.APIPath, error) {
+func (pm *PathManager) APIPathsGet(name string) (*defs.APIPath, error) {
 	req := pathAPIPathsGetReq{
 		name: name,
 		res:  make(chan pathAPIPathsGetRes),
