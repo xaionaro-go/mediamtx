@@ -50,7 +50,7 @@ type PathManagerParent interface {
 
 type PathManager struct {
 	logLevel          conf.LogLevel
-	authManager       *auth.Manager
+	authManager       AuthManager
 	rtspAddress       string
 	readTimeout       conf.StringDuration
 	writeTimeout      conf.StringDuration
@@ -81,9 +81,13 @@ type PathManager struct {
 	chAPIPathsGet  chan pathAPIPathsGetReq
 }
 
+type AuthManager interface {
+	Authenticate(req *auth.Request) error
+}
+
 func New(
 	logLevel conf.LogLevel,
-	authManager *auth.Manager,
+	authManager AuthManager,
 	rtspAddress string,
 	readTimeout conf.StringDuration,
 	writeTimeout conf.StringDuration,
