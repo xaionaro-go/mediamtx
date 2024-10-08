@@ -1,4 +1,4 @@
-package core
+package pathmanager
 
 import (
 	"context"

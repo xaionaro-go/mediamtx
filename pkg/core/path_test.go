@@ -22,7 +22,6 @@ import (
 	"github.com/pion/rtp"
 	"github.com/stretchr/testify/require"
 
-	"github.com/xaionaro-go/mediamtx/pkg/defs"
 	"github.com/xaionaro-go/mediamtx/pkg/protocols/rtmp"
 	"github.com/xaionaro-go/mediamtx/pkg/protocols/whip"
 	"github.com/xaionaro-go/mediamtx/pkg/test"
@@ -100,8 +99,6 @@ func (sh *testServer) OnSetup(ctx *gortsplib.ServerHandlerOnSetupCtx) (*base.Res
 func (sh *testServer) OnPlay(ctx *gortsplib.ServerHandlerOnPlayCtx) (*base.Response, error) {
 	return sh.onPlay(ctx)
 }
-
-var _ defs.Path = &path{}
 
 func TestPathRunOnDemand(t *testing.T) {
 	onDemand := filepath.Join(os.TempDir(), "on_demand")

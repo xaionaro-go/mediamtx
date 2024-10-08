@@ -1,4 +1,4 @@
-package core
+package pathmanager
 
 import (
 	"github.com/xaionaro-go/mediamtx/pkg/defs"

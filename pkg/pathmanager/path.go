@@ -1,4 +1,4 @@
-package core
+package pathmanager
 
 import (
 	"context"
@@ -114,6 +114,8 @@ type path struct {
 	// out
 	done chan struct{}
 }
+
+var _ defs.Path = &path{}
 
 func (pa *path) initialize() {
 	ctx, ctxCancel := context.WithCancel(pa.parentCtx)
