@@ -21,7 +21,10 @@ type streamReader struct {
 
 func (w *streamReader) initialize() {
 	w.writeErrLogger = logger.NewLimitedLogger(w.parent)
-	buffer, _ := ringbuffer.New(uint64(w.queueSize))
+	buffer, err := ringbuffer.New(uint64(w.queueSize))
+	if err != nil {
+		w.writeErrLogger.Log(logger.Error, "unable to initialize the ring buffer", err)
+	}
 	w.buffer = buffer
 	w.err = make(chan error)
 }
