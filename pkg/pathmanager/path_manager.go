@@ -39,12 +39,12 @@ func pathConfCanBeUpdated(oldPathConf *conf.Path, newPathConf *conf.Path) bool {
 	return newPathConf.Equal(clone)
 }
 
-type pathManagerHLSServer interface {
+type HLSServer interface {
 	PathReady(defs.Path)
 	PathNotReady(defs.Path)
 }
 
-type PathManagerParent interface {
+type Parent interface {
 	logger.Writer
 }
 
@@ -58,18 +58,18 @@ type PathManager struct {
 	udpMaxPayloadSize int
 	pathConfs         map[string]*conf.Path
 	externalCmdPool   *externalcmd.Pool
-	parent            PathManagerParent
+	parent            Parent
 
 	ctx         context.Context
 	ctxCancel   func()
 	wg          sync.WaitGroup
-	hlsManager  pathManagerHLSServer
+	hlsManager  HLSServer
 	paths       map[string]*path
 	pathsByConf map[string]map[*path]struct{}
 
 	// in
 	chReloadConf   chan map[string]*conf.Path
-	chSetHLSServer chan pathManagerHLSServer
+	chSetHLSServer chan HLSServer
 	chClosePath    chan *path
 	chPathReady    chan *path
 	chPathNotReady chan *path
@@ -95,7 +95,7 @@ func New(
 	udpMaxPayloadSize int,
 	pathConfs map[string]*conf.Path,
 	externalCmdPool *externalcmd.Pool,
-	parent PathManagerParent,
+	parent Parent,
 ) *PathManager {
 	return &PathManager{
 		logLevel:          logLevel,
@@ -119,7 +119,7 @@ func (pm *PathManager) Initialize(ctx context.Context) {
 	pm.paths = make(map[string]*path)
 	pm.pathsByConf = make(map[string]map[*path]struct{})
 	pm.chReloadConf = make(chan map[string]*conf.Path)
-	pm.chSetHLSServer = make(chan pathManagerHLSServer)
+	pm.chSetHLSServer = make(chan HLSServer)
 	pm.chClosePath = make(chan *path)
 	pm.chPathReady = make(chan *path)
 	pm.chPathNotReady = make(chan *path)
@@ -237,7 +237,7 @@ func (pm *PathManager) doReloadConf(newPaths map[string]*conf.Path) {
 	}
 }
 
-func (pm *PathManager) doSetHLSServer(m pathManagerHLSServer) {
+func (pm *PathManager) doSetHLSServer(m HLSServer) {
 	pm.hlsManager = m
 }
 
@@ -507,7 +507,7 @@ func (pm *PathManager) AddReader(req defs.PathAddReaderReq) (defs.Path, *stream.
 }
 
 // SetHLSServer is called by hlsManager.
-func (pm *PathManager) SetHLSServer(s pathManagerHLSServer) {
+func (pm *PathManager) SetHLSServer(s HLSServer) {
 	select {
 	case pm.chSetHLSServer <- s:
 	case <-pm.ctx.Done():
