@@ -16,7 +16,6 @@ func TestPeerConnectionCloseImmediately(t *testing.T) {
 	pc := &PeerConnection{
 		HandshakeTimeout:   conf.StringDuration(10 * time.Second),
 		TrackGatherTimeout: conf.StringDuration(2 * time.Second),
-		LocalRandomUDP:     true,
 		IPsFromInterfaces:  true,
 		Publish:            false,
 		Log:                test.NilLogger,
@@ -39,7 +38,6 @@ func TestPeerConnectionFallbackCodecs(t *testing.T) {
 	pc1 := &PeerConnection{
 		HandshakeTimeout:   conf.StringDuration(10 * time.Second),
 		TrackGatherTimeout: conf.StringDuration(2 * time.Second),
-		LocalRandomUDP:     true,
 		IPsFromInterfaces:  true,
 		Publish:            false,
 		Log:                test.NilLogger,
@@ -51,7 +49,6 @@ func TestPeerConnectionFallbackCodecs(t *testing.T) {
 	pc2 := &PeerConnection{
 		HandshakeTimeout:   conf.StringDuration(10 * time.Second),
 		TrackGatherTimeout: conf.StringDuration(2 * time.Second),
-		LocalRandomUDP:     true,
 		IPsFromInterfaces:  true,
 		Publish:            true,
 		OutgoingTracks: []*OutgoingTrack{{
@@ -82,7 +79,7 @@ func TestPeerConnectionFallbackCodecs(t *testing.T) {
 				Media:   "video",
 				Port:    sdp.RangedPort{Value: 9},
 				Protos:  []string{"UDP", "TLS", "RTP", "SAVPF"},
-				Formats: []string{"97"},
+				Formats: []string{"96", "97"},
 			},
 			ConnectionInformation: s.MediaDescriptions[0].ConnectionInformation,
 			Attributes:            s.MediaDescriptions[0].Attributes,

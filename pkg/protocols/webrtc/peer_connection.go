@@ -74,10 +74,8 @@ type PeerConnection struct {
 	ICETCPMux             ice.TCPMux
 	HandshakeTimeout      conf.StringDuration
 	TrackGatherTimeout    conf.StringDuration
-	LocalRandomUDP        bool
 	IPsFromInterfaces     bool
 	IPsFromInterfacesList []string
-	AdditionalHosts       []string
 	Publish               bool
 	OutgoingTracks        []*OutgoingTrack
 	Log                   logger.Writer
@@ -104,8 +102,6 @@ func (co *PeerConnection) Start() error {
 			stringInSlice(iface, co.IPsFromInterfacesList))
 	})
 
-	settingsEngine.SetAdditionalHosts(co.AdditionalHosts)
-
 	var networkTypes []webrtc.NetworkType
 
 	// always enable UDP in order to support STUN/TURN
@@ -118,10 +114,6 @@ func (co *PeerConnection) Start() error {
 	if co.ICETCPMux != nil {
 		settingsEngine.SetICETCPMux(co.ICETCPMux)
 		networkTypes = append(networkTypes, webrtc.NetworkTypeTCP4)
-	}
-
-	if co.LocalRandomUDP {
-		settingsEngine.SetICEUDPRandom(true)
 	}
 
 	settingsEngine.SetNetworkTypes(networkTypes)

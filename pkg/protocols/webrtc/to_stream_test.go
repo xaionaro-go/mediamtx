@@ -335,7 +335,6 @@ func TestToStream(t *testing.T) {
 			pc1 := &PeerConnection{
 				HandshakeTimeout:   conf.StringDuration(10 * time.Second),
 				TrackGatherTimeout: conf.StringDuration(2 * time.Second),
-				LocalRandomUDP:     true,
 				IPsFromInterfaces:  true,
 				Publish:            true,
 				OutgoingTracks: []*OutgoingTrack{{
@@ -350,7 +349,6 @@ func TestToStream(t *testing.T) {
 			pc2 := &PeerConnection{
 				HandshakeTimeout:   conf.StringDuration(10 * time.Second),
 				TrackGatherTimeout: conf.StringDuration(2 * time.Second),
-				LocalRandomUDP:     true,
 				IPsFromInterfaces:  true,
 				Publish:            false,
 				Log:                test.NilLogger,
