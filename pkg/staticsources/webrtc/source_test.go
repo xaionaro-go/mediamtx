@@ -36,7 +36,6 @@ func TestSource(t *testing.T) {
 	}}
 
 	pc := &webrtc.PeerConnection{
-		LocalRandomUDP:     true,
 		IPsFromInterfaces:  true,
 		Publish:            true,
 		HandshakeTimeout:   conf.Duration(10 * time.Second),

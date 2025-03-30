@@ -69,13 +69,11 @@ type trackRecvPair struct {
 
 // PeerConnection is a wrapper around webrtc.PeerConnection.
 type PeerConnection struct {
-	LocalRandomUDP        bool
 	ICEUDPMux             ice.UDPMux
 	ICETCPMux             ice.TCPMux
 	ICEServers            []webrtc.ICEServer
 	IPsFromInterfaces     bool
 	IPsFromInterfacesList []string
-	AdditionalHosts       []string
 	HandshakeTimeout      conf.Duration
 	TrackGatherTimeout    conf.Duration
 	STUNGatherTimeout     conf.Duration
@@ -107,8 +105,6 @@ func (co *PeerConnection) Start() error {
 			stringInSlice(iface, co.IPsFromInterfacesList))
 	})
 
-	settingsEngine.SetAdditionalHosts(co.AdditionalHosts)
-
 	// always enable all networks since we might be the client of a remote TCP listener
 	settingsEngine.SetNetworkTypes([]webrtc.NetworkType{
 		webrtc.NetworkTypeUDP4,
@@ -121,10 +117,6 @@ func (co *PeerConnection) Start() error {
 
 	if co.ICETCPMux != nil {
 		settingsEngine.SetICETCPMux(co.ICETCPMux)
-	}
-
-	if co.LocalRandomUDP {
-		settingsEngine.SetLocalRandomUDP(true)
 	}
 
 	settingsEngine.SetSTUNGatherTimeout(time.Duration(co.STUNGatherTimeout))

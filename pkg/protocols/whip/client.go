@@ -44,7 +44,6 @@ func (c *Client) Initialize(ctx context.Context) error {
 	}
 
 	c.pc = &webrtc.PeerConnection{
-		LocalRandomUDP:     true,
 		ICEServers:         iceServers,
 		IPsFromInterfaces:  true,
 		HandshakeTimeout:   conf.Duration(10 * time.Second),
