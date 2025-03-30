@@ -1,12 +1,16 @@
 package stream
 
 import (
+	"context"
 	"fmt"
+	"log/slog"
 
 	"github.com/bluenviron/gortsplib/v4/pkg/ringbuffer"
 	"github.com/xaionaro-go/mediamtx/pkg/counterdumper"
 	"github.com/xaionaro-go/mediamtx/pkg/logger"
 )
+
+var Logger slog.Logger
 
 type streamReader struct {
 	queueSize int
@@ -21,7 +25,10 @@ type streamReader struct {
 }
 
 func (w *streamReader) initialize() {
-	buffer, _ := ringbuffer.New(uint64(w.queueSize))
+	buffer, err := ringbuffer.New(uint64(w.queueSize))
+	if err != nil {
+		Logger.Log(context.TODO(), slog.LevelError, "unable to initialize the ring buffer", slog.String("error", err.Error()))
+	}
 	w.buffer = buffer
 	w.err = make(chan error)
 }
