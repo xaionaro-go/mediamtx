@@ -383,9 +383,11 @@ func (r *Reader) readTracks() (map[uint8]format.Format, map[uint8]format.Format,
 			curTime = msg.DTS
 
 			if msg.Type == message.VideoTypeConfig && videoTracks[0] == nil {
-				videoTracks[0], err = h264TrackFromConfig(msg.Payload)
-				if err != nil {
-					return nil, nil, err
+				if len(msg.Payload) != 0 {
+					videoTracks[0], err = h264TrackFromConfig(msg.Payload)
+					if err != nil {
+						return nil, nil, err
+					}
 				}
 			}
 
@@ -613,6 +615,9 @@ func (r *Reader) OnDataH264(track *format.H264, cb OnDataH26xFunc) {
 		case *message.Video:
 			switch msg.Type {
 			case message.VideoTypeConfig:
+				if len(msg.Payload) == 0 {
+					return nil
+				}
 				var conf h264conf.Conf
 				err := conf.Unmarshal(msg.Payload)
 				if err != nil {
@@ -627,6 +632,9 @@ func (r *Reader) OnDataH264(track *format.H264, cb OnDataH26xFunc) {
 				cb(msg.DTS+msg.PTSDelta, au)
 
 			case message.VideoTypeAU:
+				if len(msg.Payload) == 0 {
+					return nil
+				}
 				var au h264.AVCC
 				err := au.Unmarshal(msg.Payload)
 				if err != nil {
@@ -642,6 +650,9 @@ func (r *Reader) OnDataH264(track *format.H264, cb OnDataH26xFunc) {
 			return nil
 
 		case *message.VideoExFramesX:
+			if len(msg.Payload) == 0 {
+				return nil
+			}
 			var au h264.AVCC
 			err := au.Unmarshal(msg.Payload)
 			if err != nil {
@@ -654,6 +665,9 @@ func (r *Reader) OnDataH264(track *format.H264, cb OnDataH26xFunc) {
 			cb(msg.DTS, au)
 
 		case *message.VideoExCodedFrames:
+			if len(msg.Payload) == 0 {
+				return nil
+			}
 			var au h264.AVCC
 			err := au.Unmarshal(msg.Payload)
 			if err != nil {
@@ -770,6 +784,7 @@ func (r *Reader) Read() error {
 	switch msg := msg.(type) {
 	case *message.Video, *message.VideoExCodedFrames, *message.VideoExFramesX:
 		if r.videoTracks[0] == nil {
+			return nil
 			return fmt.Errorf("received a packet for video track 0, but track is not set up")
 		}
 
@@ -777,6 +792,7 @@ func (r *Reader) Read() error {
 
 	case *message.Audio, *message.AudioExCodedFrames:
 		if r.audioTracks[0] == nil {
+			return nil
 			return fmt.Errorf("received a packet for audio track 0, but track is not set up")
 		}
 

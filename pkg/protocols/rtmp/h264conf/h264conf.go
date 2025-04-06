@@ -14,7 +14,7 @@ type Conf struct {
 // Unmarshal decodes a Conf from bytes.
 func (c *Conf) Unmarshal(buf []byte) error {
 	if len(buf) < 8 {
-		return fmt.Errorf("invalid size 1")
+		return fmt.Errorf("invalid size 1: %d", len(buf))
 	}
 
 	pos := 5
@@ -22,7 +22,7 @@ func (c *Conf) Unmarshal(buf []byte) error {
 	spsCount := buf[pos] & 0x1F
 	pos++
 	if spsCount != 1 {
-		return fmt.Errorf("sps count != 1 is unsupported")
+		return fmt.Errorf("sps count != 1 is unsupported: %d", spsCount)
 	}
 
 	spsLen := int(uint16(buf[pos])<<8 | uint16(buf[pos+1]))
