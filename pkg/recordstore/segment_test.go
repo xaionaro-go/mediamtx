@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/xaionaro-go/mediamtx/pkg/conf"
 	"github.com/stretchr/testify/require"
+	"github.com/xaionaro-go/mediamtx/pkg/conf"
 )
 
 func TestFindAllPathsWithSegments(t *testing.T) {

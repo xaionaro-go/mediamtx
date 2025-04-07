@@ -9,6 +9,8 @@ import (
 	"github.com/bluenviron/gortsplib/v4/pkg/base"
 	"github.com/bluenviron/gortsplib/v4/pkg/description"
 	"github.com/bluenviron/gortsplib/v4/pkg/format"
+	"github.com/pion/rtp"
+	"github.com/stretchr/testify/require"
 	"github.com/xaionaro-go/mediamtx/pkg/auth"
 	"github.com/xaionaro-go/mediamtx/pkg/conf"
 	"github.com/xaionaro-go/mediamtx/pkg/defs"
@@ -16,8 +18,6 @@ import (
 	"github.com/xaionaro-go/mediamtx/pkg/stream"
 	"github.com/xaionaro-go/mediamtx/pkg/test"
 	"github.com/xaionaro-go/mediamtx/pkg/unit"
-	"github.com/pion/rtp"
-	"github.com/stretchr/testify/require"
 )
 
 type dummyPath struct {

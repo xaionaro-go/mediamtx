@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/xaionaro-go/mediamtx/pkg/test"
 	"github.com/stretchr/testify/require"
+	"github.com/xaionaro-go/mediamtx/pkg/test"
 )
 
 func TestNoFile(t *testing.T) {

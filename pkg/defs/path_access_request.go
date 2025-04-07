@@ -8,9 +8,9 @@ import (
 
 	"github.com/bluenviron/gortsplib/v4/pkg/base"
 	"github.com/bluenviron/gortsplib/v4/pkg/headers"
+	"github.com/google/uuid"
 	"github.com/xaionaro-go/mediamtx/pkg/auth"
 	"github.com/xaionaro-go/mediamtx/pkg/conf"
-	"github.com/google/uuid"
 )
 
 func addJWTFromAuthorization(rawQuery string, auth string) string {

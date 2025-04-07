@@ -7,14 +7,14 @@ import (
 
 	"github.com/bluenviron/gortsplib/v4/pkg/description"
 	"github.com/bluenviron/mediacommon/v2/pkg/formats/mpegts"
+	srt "github.com/datarhei/gosrt"
+	"github.com/stretchr/testify/require"
 	"github.com/xaionaro-go/mediamtx/pkg/conf"
 	"github.com/xaionaro-go/mediamtx/pkg/defs"
 	"github.com/xaionaro-go/mediamtx/pkg/externalcmd"
 	"github.com/xaionaro-go/mediamtx/pkg/stream"
 	"github.com/xaionaro-go/mediamtx/pkg/test"
 	"github.com/xaionaro-go/mediamtx/pkg/unit"
-	srt "github.com/datarhei/gosrt"
-	"github.com/stretchr/testify/require"
 )
 
 type dummyPath struct {

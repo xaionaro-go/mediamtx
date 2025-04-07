@@ -7,10 +7,10 @@ import (
 	"github.com/bluenviron/gortsplib/v4"
 	"github.com/bluenviron/gortsplib/v4/pkg/description"
 	"github.com/bluenviron/gortsplib/v4/pkg/format"
+	"github.com/pion/rtp"
 	"github.com/xaionaro-go/mediamtx/pkg/conf"
 	"github.com/xaionaro-go/mediamtx/pkg/logger"
 	"github.com/xaionaro-go/mediamtx/pkg/stream"
-	"github.com/pion/rtp"
 )
 
 type ntpState int

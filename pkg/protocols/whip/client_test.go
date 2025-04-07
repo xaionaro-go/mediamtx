@@ -9,12 +9,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/xaionaro-go/mediamtx/pkg/conf"
-	"github.com/xaionaro-go/mediamtx/pkg/protocols/webrtc"
-	"github.com/xaionaro-go/mediamtx/pkg/test"
 	"github.com/pion/rtp"
 	pwebrtc "github.com/pion/webrtc/v4"
 	"github.com/stretchr/testify/require"
+	"github.com/xaionaro-go/mediamtx/pkg/conf"
+	"github.com/xaionaro-go/mediamtx/pkg/protocols/webrtc"
+	"github.com/xaionaro-go/mediamtx/pkg/test"
 )
 
 func whipOffer(body []byte) *pwebrtc.SessionDescription {

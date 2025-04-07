@@ -13,10 +13,10 @@ import (
 	"github.com/bluenviron/gortsplib/v4/pkg/format/rtpvp8"
 	"github.com/bluenviron/gortsplib/v4/pkg/format/rtpvp9"
 	"github.com/bluenviron/mediacommon/v2/pkg/codecs/g711"
+	"github.com/pion/webrtc/v4"
 	"github.com/xaionaro-go/mediamtx/pkg/logger"
 	"github.com/xaionaro-go/mediamtx/pkg/stream"
 	"github.com/xaionaro-go/mediamtx/pkg/unit"
-	"github.com/pion/webrtc/v4"
 )
 
 const (

@@ -8,8 +8,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/xaionaro-go/mediamtx/pkg/conf/jsonwrapper"
 	"github.com/matthewhartstonge/argon2"
+	"github.com/xaionaro-go/mediamtx/pkg/conf/jsonwrapper"
 )
 
 var (

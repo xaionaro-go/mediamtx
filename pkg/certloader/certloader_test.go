@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/xaionaro-go/mediamtx/pkg/test"
 	"github.com/stretchr/testify/require"
+	"github.com/xaionaro-go/mediamtx/pkg/test"
 )
 
 func TestCertReload(t *testing.T) {

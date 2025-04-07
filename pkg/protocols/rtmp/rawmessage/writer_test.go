@@ -6,9 +6,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/require"
 	"github.com/xaionaro-go/mediamtx/pkg/protocols/rtmp/bytecounter"
 	"github.com/xaionaro-go/mediamtx/pkg/protocols/rtmp/chunk"
-	"github.com/stretchr/testify/require"
 )
 
 func chunkBodySize(ch chunk.Chunk) uint32 {

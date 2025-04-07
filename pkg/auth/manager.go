@@ -14,10 +14,10 @@ import (
 	"time"
 
 	"github.com/MicahParks/keyfunc/v3"
-	"github.com/xaionaro-go/mediamtx/pkg/conf"
-	"github.com/xaionaro-go/mediamtx/pkg/conf/jsonwrapper"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
+	"github.com/xaionaro-go/mediamtx/pkg/conf"
+	"github.com/xaionaro-go/mediamtx/pkg/conf/jsonwrapper"
 )
 
 const (

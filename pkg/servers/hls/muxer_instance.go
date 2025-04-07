@@ -6,12 +6,12 @@ import (
 	"time"
 
 	"github.com/bluenviron/gohlslib/v2"
+	"github.com/gin-gonic/gin"
 	"github.com/xaionaro-go/mediamtx/pkg/conf"
 	"github.com/xaionaro-go/mediamtx/pkg/defs"
 	"github.com/xaionaro-go/mediamtx/pkg/logger"
 	"github.com/xaionaro-go/mediamtx/pkg/protocols/hls"
 	"github.com/xaionaro-go/mediamtx/pkg/stream"
-	"github.com/gin-gonic/gin"
 )
 
 type muxerInstance struct {

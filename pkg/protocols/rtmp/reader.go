@@ -14,6 +14,7 @@ import (
 	"github.com/bluenviron/mediacommon/v2/pkg/codecs/h265"
 	"github.com/bluenviron/mediacommon/v2/pkg/codecs/mpeg4audio"
 
+	"github.com/xaionaro-go/mediamtx/pkg/logger"
 	"github.com/xaionaro-go/mediamtx/pkg/protocols/rtmp/h264conf"
 	"github.com/xaionaro-go/mediamtx/pkg/protocols/rtmp/message"
 )
@@ -386,7 +387,11 @@ func (r *Reader) readTracks() (map[uint8]format.Format, map[uint8]format.Format,
 				if len(msg.Payload) != 0 {
 					videoTracks[0], err = h264TrackFromConfig(msg.Payload)
 					if err != nil {
-						return nil, nil, err
+						l, _ := logger.New(logger.Warn, []logger.Destination{logger.DestinationStdout}, "", "")
+						if l != nil {
+							l.Log(logger.Error, "unable to read the H264 config: %v", err)
+						}
+						return nil, nil, nil
 					}
 				}
 			}
@@ -578,6 +583,7 @@ func (r *Reader) OnDataVP9(track *format.VP9, cb OnDataVP9Func) {
 
 // OnDataH265 sets a callback that is called when H265 data is received.
 func (r *Reader) OnDataH265(track *format.H265, cb OnDataH26xFunc) {
+	avccDecodeErrorCount := 0
 	r.onVideoData[r.videoTrackID(track)] = func(msg message.Message) error {
 		switch msg := msg.(type) {
 		case *message.VideoExFramesX:
@@ -587,7 +593,15 @@ func (r *Reader) OnDataH265(track *format.H265, cb OnDataH26xFunc) {
 				if errors.Is(err, h264.ErrAVCCNoNALUs) {
 					return nil
 				}
-				return fmt.Errorf("unable to decode AVCC: %w", err)
+				avccDecodeErrorCount++
+				if avccDecodeErrorCount > 10 {
+					return fmt.Errorf("unable to decode AVCC: %w", err)
+				}
+				l, _ := logger.New(logger.Warn, []logger.Destination{logger.DestinationStdout}, "", "")
+				if l != nil {
+					l.Log(logger.Error, "unable to decode AVCC: %v", err)
+				}
+				return nil
 			}
 
 			cb(msg.DTS, au)
@@ -599,7 +613,15 @@ func (r *Reader) OnDataH265(track *format.H265, cb OnDataH26xFunc) {
 				if errors.Is(err, h264.ErrAVCCNoNALUs) {
 					return nil
 				}
-				return fmt.Errorf("unable to decode AVCC: %w", err)
+				avccDecodeErrorCount++
+				if avccDecodeErrorCount > 10 {
+					return fmt.Errorf("unable to decode AVCC: %w", err)
+				}
+				l, _ := logger.New(logger.Warn, []logger.Destination{logger.DestinationStdout}, "", "")
+				if l != nil {
+					l.Log(logger.Error, "unable to decode AVCC: %v", err)
+				}
+				return nil
 			}
 
 			cb(msg.DTS+msg.PTSDelta, au)
@@ -610,6 +632,7 @@ func (r *Reader) OnDataH265(track *format.H265, cb OnDataH26xFunc) {
 
 // OnDataH264 sets a callback that is called when H264 data is received.
 func (r *Reader) OnDataH264(track *format.H264, cb OnDataH26xFunc) {
+	avccDecodeErrorCount := 0
 	r.onVideoData[r.videoTrackID(track)] = func(msg message.Message) error {
 		switch msg := msg.(type) {
 		case *message.Video:
@@ -641,7 +664,15 @@ func (r *Reader) OnDataH264(track *format.H264, cb OnDataH26xFunc) {
 					if errors.Is(err, h264.ErrAVCCNoNALUs) {
 						return nil
 					}
-					return fmt.Errorf("unable to decode AVCC: %w", err)
+					avccDecodeErrorCount++
+					if avccDecodeErrorCount > 10 {
+						return fmt.Errorf("unable to decode AVCC: %w", err)
+					}
+					l, _ := logger.New(logger.Warn, []logger.Destination{logger.DestinationStdout}, "", "")
+					if l != nil {
+						l.Log(logger.Error, "unable to decode AVCC: %v", err)
+					}
+					return nil
 				}
 
 				cb(msg.DTS+msg.PTSDelta, au)
@@ -659,7 +690,15 @@ func (r *Reader) OnDataH264(track *format.H264, cb OnDataH26xFunc) {
 				if errors.Is(err, h264.ErrAVCCNoNALUs) {
 					return nil
 				}
-				return fmt.Errorf("unable to decode AVCC: %w", err)
+				avccDecodeErrorCount++
+				if avccDecodeErrorCount > 10 {
+					return fmt.Errorf("unable to decode AVCC: %w", err)
+				}
+				l, _ := logger.New(logger.Warn, []logger.Destination{logger.DestinationStdout}, "", "")
+				if l != nil {
+					l.Log(logger.Error, "unable to decode AVCC: %v", err)
+				}
+				return nil
 			}
 
 			cb(msg.DTS, au)
@@ -674,7 +713,15 @@ func (r *Reader) OnDataH264(track *format.H264, cb OnDataH26xFunc) {
 				if errors.Is(err, h264.ErrAVCCNoNALUs) {
 					return nil
 				}
-				return fmt.Errorf("unable to decode AVCC: %w", err)
+				avccDecodeErrorCount++
+				if avccDecodeErrorCount > 10 {
+					return fmt.Errorf("unable to decode AVCC: %w", err)
+				}
+				l, _ := logger.New(logger.Warn, []logger.Destination{logger.DestinationStdout}, "", "")
+				if l != nil {
+					l.Log(logger.Error, "unable to decode AVCC: %v", err)
+				}
+				return nil
 			}
 
 			cb(msg.DTS+msg.PTSDelta, au)

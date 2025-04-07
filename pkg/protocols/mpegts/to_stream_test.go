@@ -8,9 +8,9 @@ import (
 
 	"github.com/asticode/go-astits"
 	"github.com/bluenviron/mediacommon/v2/pkg/formats/mpegts"
+	"github.com/stretchr/testify/require"
 	"github.com/xaionaro-go/mediamtx/pkg/logger"
 	"github.com/xaionaro-go/mediamtx/pkg/test"
-	"github.com/stretchr/testify/require"
 )
 
 func TestToStreamNoSupportedCodecs(t *testing.T) {

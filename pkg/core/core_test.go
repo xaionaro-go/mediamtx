@@ -8,8 +8,8 @@ import (
 
 	"github.com/bluenviron/gortsplib/v4"
 	"github.com/bluenviron/gortsplib/v4/pkg/description"
-	"github.com/xaionaro-go/mediamtx/pkg/test"
 	"github.com/stretchr/testify/require"
+	"github.com/xaionaro-go/mediamtx/pkg/test"
 )
 
 func newInstance(conf string) (*Core, bool) {

@@ -1,3 +1,4 @@
+//go:build none
 // +build none
 
 package webrtc
@@ -9,13 +10,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/xaionaro-go/mediamtx/pkg/conf"
-	"github.com/xaionaro-go/mediamtx/pkg/test"
 	"github.com/pion/ice/v4"
 	"github.com/pion/logging"
 	"github.com/pion/sdp/v3"
 	"github.com/pion/webrtc/v4"
 	"github.com/stretchr/testify/require"
+	"github.com/xaionaro-go/mediamtx/pkg/conf"
+	"github.com/xaionaro-go/mediamtx/pkg/test"
 )
 
 type nilWriter struct{}

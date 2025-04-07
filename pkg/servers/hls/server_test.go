@@ -12,13 +12,13 @@ import (
 	"github.com/bluenviron/gohlslib/v2"
 	"github.com/bluenviron/gohlslib/v2/pkg/codecs"
 	"github.com/bluenviron/gortsplib/v4/pkg/description"
+	"github.com/stretchr/testify/require"
 	"github.com/xaionaro-go/mediamtx/pkg/conf"
 	"github.com/xaionaro-go/mediamtx/pkg/defs"
 	"github.com/xaionaro-go/mediamtx/pkg/externalcmd"
 	"github.com/xaionaro-go/mediamtx/pkg/stream"
 	"github.com/xaionaro-go/mediamtx/pkg/test"
 	"github.com/xaionaro-go/mediamtx/pkg/unit"
-	"github.com/stretchr/testify/require"
 )
 
 type dummyPath struct{}

@@ -207,9 +207,5 @@ func ToStream(r *Reader, stream **stream.Stream) ([]*description.Media, error) {
 		}
 	}
 
-	if len(medias) == 0 {
-		return nil, errNoSupportedCodecsTo
-	}
-
 	return medias, nil
 }

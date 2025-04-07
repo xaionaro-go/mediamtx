@@ -11,10 +11,10 @@ import (
 	"github.com/bluenviron/gortsplib/v4/pkg/description"
 	"github.com/bluenviron/gortsplib/v4/pkg/format"
 	"github.com/bluenviron/mediacommon/v2/pkg/formats/mpegts"
+	"github.com/stretchr/testify/require"
 	"github.com/xaionaro-go/mediamtx/pkg/stream"
 	"github.com/xaionaro-go/mediamtx/pkg/test"
 	"github.com/xaionaro-go/mediamtx/pkg/unit"
-	"github.com/stretchr/testify/require"
 )
 
 func TestToStreamNoSupportedCodecs(t *testing.T) {

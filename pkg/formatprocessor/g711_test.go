@@ -4,9 +4,9 @@ import (
 	"testing"
 
 	"github.com/bluenviron/gortsplib/v4/pkg/format"
-	"github.com/xaionaro-go/mediamtx/pkg/unit"
 	"github.com/pion/rtp"
 	"github.com/stretchr/testify/require"
+	"github.com/xaionaro-go/mediamtx/pkg/unit"
 )
 
 func TestG611Encode(t *testing.T) {

@@ -7,12 +7,12 @@ import (
 	"sync"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/xaionaro-go/mediamtx/pkg/auth"
 	"github.com/xaionaro-go/mediamtx/pkg/conf"
 	"github.com/xaionaro-go/mediamtx/pkg/logger"
 	"github.com/xaionaro-go/mediamtx/pkg/protocols/httpp"
 	"github.com/xaionaro-go/mediamtx/pkg/restrictnetwork"
-	"github.com/gin-gonic/gin"
 )
 
 type serverAuthManager interface {

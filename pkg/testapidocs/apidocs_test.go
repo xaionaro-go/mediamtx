@@ -7,10 +7,10 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/require"
 	"github.com/xaionaro-go/mediamtx/pkg/conf"
 	"github.com/xaionaro-go/mediamtx/pkg/conf/yamlwrapper"
 	"github.com/xaionaro-go/mediamtx/pkg/defs"
-	"github.com/stretchr/testify/require"
 )
 
 type openAPIProperty struct {

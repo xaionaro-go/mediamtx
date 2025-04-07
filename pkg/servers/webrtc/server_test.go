@@ -12,6 +12,10 @@ import (
 
 	"github.com/bluenviron/gortsplib/v4/pkg/description"
 	"github.com/bluenviron/gortsplib/v4/pkg/format"
+	"github.com/google/uuid"
+	"github.com/pion/rtp"
+	pwebrtc "github.com/pion/webrtc/v4"
+	"github.com/stretchr/testify/require"
 	"github.com/xaionaro-go/mediamtx/pkg/conf"
 	"github.com/xaionaro-go/mediamtx/pkg/defs"
 	"github.com/xaionaro-go/mediamtx/pkg/externalcmd"
@@ -20,10 +24,6 @@ import (
 	"github.com/xaionaro-go/mediamtx/pkg/stream"
 	"github.com/xaionaro-go/mediamtx/pkg/test"
 	"github.com/xaionaro-go/mediamtx/pkg/unit"
-	"github.com/google/uuid"
-	"github.com/pion/rtp"
-	pwebrtc "github.com/pion/webrtc/v4"
-	"github.com/stretchr/testify/require"
 )
 
 func uint16Ptr(v uint16) *uint16 {

@@ -10,10 +10,10 @@ import (
 	"time"
 
 	"github.com/bluenviron/mediacommon/v2/pkg/formats/fmp4"
+	"github.com/gin-gonic/gin"
 	"github.com/xaionaro-go/mediamtx/pkg/conf"
 	"github.com/xaionaro-go/mediamtx/pkg/logger"
 	"github.com/xaionaro-go/mediamtx/pkg/recordstore"
-	"github.com/gin-gonic/gin"
 )
 
 type writerWrapper struct {

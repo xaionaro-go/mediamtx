@@ -7,12 +7,12 @@ import (
 
 	"github.com/bluenviron/gortsplib/v4/pkg/description"
 	"github.com/bluenviron/gortsplib/v4/pkg/format"
+	"github.com/stretchr/testify/require"
 	"github.com/xaionaro-go/mediamtx/pkg/logger"
 	"github.com/xaionaro-go/mediamtx/pkg/protocols/rtmp/bytecounter"
 	"github.com/xaionaro-go/mediamtx/pkg/protocols/rtmp/message"
 	"github.com/xaionaro-go/mediamtx/pkg/stream"
 	"github.com/xaionaro-go/mediamtx/pkg/test"
-	"github.com/stretchr/testify/require"
 )
 
 func TestFromStreamNoSupportedCodecs(t *testing.T) {

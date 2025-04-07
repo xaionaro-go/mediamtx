@@ -13,9 +13,9 @@ import (
 
 	"github.com/MicahParks/jwkset"
 	"github.com/bluenviron/gortsplib/v4/pkg/base"
-	"github.com/xaionaro-go/mediamtx/pkg/conf"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/stretchr/testify/require"
+	"github.com/xaionaro-go/mediamtx/pkg/conf"
 )
 
 func mustParseCIDR(v string) net.IPNet {

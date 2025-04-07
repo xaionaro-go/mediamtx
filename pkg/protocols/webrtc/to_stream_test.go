@@ -1,3 +1,4 @@
+//go:build none
 // +build none
 
 package webrtc
@@ -8,12 +9,12 @@ import (
 	"time"
 
 	"github.com/bluenviron/gortsplib/v4/pkg/format"
-	"github.com/xaionaro-go/mediamtx/pkg/conf"
-	"github.com/xaionaro-go/mediamtx/pkg/stream"
-	"github.com/xaionaro-go/mediamtx/pkg/test"
 	"github.com/pion/rtp"
 	"github.com/pion/webrtc/v4"
 	"github.com/stretchr/testify/require"
+	"github.com/xaionaro-go/mediamtx/pkg/conf"
+	"github.com/xaionaro-go/mediamtx/pkg/stream"
+	"github.com/xaionaro-go/mediamtx/pkg/test"
 )
 
 func TestToStreamNoSupportedCodecs(t *testing.T) {
